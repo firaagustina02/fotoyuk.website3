@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fotoyuk - Fotobooth Estetik & Ceria</title>
+    
+    <!-- Font Google: Fredoka (Ceria) dan Poppins (Bersih) -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- VARIABEL WARNA (Tema Ceria & Estetik) --- */
+        :root {
+            --primary: #FFB7B2;   /* Soft Pink */
+            --secondary: #B5EAD7; /* Mint Green */
+            --accent: #FFDAC1;    /* Peach */
+            --dark: #4A4A4A;      /* Dark Grey */
+            --light: #FFF9F5;     /* Cream White */
+            --purple: #C7CEEA;    /* Lavender */
+        }
+
+        /* --- RESET & BASE STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3 {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* --- HEADER --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-shadow: 2px 2px 0px var(--secondary);
+        }
+
+        nav ul {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        nav a:hover { color: var(--primary); }
+
+        .btn-book {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .btn-book:hover { transform: scale(1.05); }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: radial-gradient(circle at top right, var(--secondary), transparent 40%),
+                        radial-gradient(circle at bottom left, var(--primary), transparent 40%);
+            padding: 0 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            color: #666;
+        }
+
+        /* --- FITUR FOTOYUK (Canvas Editor) --- */
+        .editor-section {
+            padding: 80px 5%;
+            background-color: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: var(--primary);
+        }
+
+        .editor-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            background: #eee;
+            width: 400px;
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        canvas {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .controls {
+            flex: 1;
+            min-width: 300px;
+            background: var(--light);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .control-group { margin-bottom: 25px; }
+        
+        .control-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+
+        /* Custom File Upload */
+        .file-upload {
+            display: inline-block;
+            padding: 12px 24px;
+            cursor: pointer;
+            background: var(--purple);
+            color: white;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+        .file-upload:hover { opacity: 0.9; }
+        input[type="file"] { display: none; }
+
+        /* Frame Options */
+        .frame-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .frame-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .frame-btn.active { border-color: var(--primary); transform: translateY(-5px); }
+
+        /* Tombol Aksi */
+        .action-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        .btn-download { background-color: var(--secondary); color: var(--dark); }
+        .btn-download:hover { background-color: #a3e6cc; }
+
+        /* --- GALERI --- */
+        .gallery {
+            padding: 80px 5%;
+            background-color: var(--light);
+        }
+        
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item {
+            height: 300px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .gallery-item:hover img { transform: scale(1.1); }
+
+        /* --- FOOTER --- */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        footer p { opacity: 0.8; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 2.5rem; }
+            .editor-container { flex-direction: column; align-items: center; }
+            .canvas-wrapper { width: 100%; max-width: 350px; }
+            nav ul { display: none; } /* Simplified mobile menu */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="logo">Fotoyuk 📸</div>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#fitur">Coba Frame</a></li>
+                <li><a href="#galeri">Galeri</a></li>
+            </ul>
+        </nav>
+        <a href="#contact" class="btn-book">Pesan Sekarang</a>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Abadikan Momenmu<br>dengan Estetik</h1>
+            <p>Fotobooth kreatif dengan frame customizable untuk acara pernikahan, ulang tahun, dan gradiasi.</p>
+            <a href="#fitur" class="btn-book" style="font-size: 1.2rem; padding: 15px 30px;">Buat Frame Mu!</a>
+        </div>
+    </section>
+
+    <!-- FITUR & EDITOR -->
+    <section class="editor-section" id="fitur">
+        <h2 class="section-title">Buat Frame Custom Mu! 🎨</h2>
+        
+        <div class="editor-container">
+            <!-- Area Canvas (Hasil Foto) -->
+            <div class="canvas-wrapper">
+                <canvas id="photoCanvas" width="400" height="500"></canvas>
+                <div id="placeholder" style="position:absolute; color:#aaa; text-align:center;">
+                    <p>Foto akan muncul di sini</p>
+                </div>
+            </div>
+
+            <!-- Kontrol -->
+            <div class="controls">
+                <!-- Upload Foto -->
+                <div class="control-group">
+                    <label>1. Unggah Foto Kamu</label>
+                    <label for="upload" class="file-upload">
+                        📁 Pilih File Foto
+                    </label>
+                    <input type="file" id="upload" accept="image/*">
+                </div>
+
+                <!-- Pilih Frame -->
+                <div class="control-group">
+                    <label>2. Pilih Tema Frame</label>
+                    <div class="frame-options">
+                        <div class="frame-btn" style="background: #fff; border: 2px solid #eee;" onclick="setFrame('none', this)">Normal</div>
+                        <div class="frame-btn" style="background: #FFB7B2;" onclick="setFrame('pink', this)">Pink</div>
+                        <div class="frame-btn" style="background: #B5EAD7;" onclick="setFrame('mint', this)">Mint</div>
+                        <div class="frame-btn" style="background: #C7CEEA;" onclick="setFrame('lavender', this)">Lav</div>
+                        <div class="frame-btn" style="background: #FFDAC1;" onclick="setFrame('peach', this)">Peach</div>
+                        <div class="frame-btn" style="background: #333; color: #fff;" onclick="setFrame('bw', this)">B&W</div>
+                    </div>
+                </div>
+
+                <!-- Tambah Teks -->
+                <div class="control-group">
+                    <label>3. Tambahkan Teks (Opsional)</label>
+                    <input type="text" id="captionText" placeholder="Contoh: Happy Birthday!" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #ddd;" oninput="drawCanvas()">
+                </div>
+
+                <!-- Download -->
+                <button class="action-btn btn
